@@ -17,25 +17,11 @@ jobs:
 
       - name: Clean old files
         run: |
-          rm -rf .openapi-generator
-          rm -rf Api
-          rm -rf Controller
-          rm -rf DependencyInjection
-          rm -rf Model
-          rm -rf Resources
-          rm -rf Service
-          rm -rf Tests
+          rm -rf .openapi-generator Api Controller DependencyInjection Model Resources Service Tests
 
       - name: Open API code generation
         run:
-          docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli:v5.0.0-beta generate \
-            -i local/catroweb.yaml \
-            -g php-symfony \
-            -p sortParamsByRequiredFlag=true \
-            -p skipFormModel=true \
-            -p variableNamingConvention=snake_case \
-            -p phpLegacySupport=false \
-            -o /local
+          docker run --rm -v "${PWD}:/local" openapitools/openapi-generator-cli:v5.0.0-beta generate -i local/catroweb.yaml -g php-symfony -p sortParamsByRequiredFlag=true -p skipFormModel=true -p variableNamingConvention=snake_case -p phpLegacySupport=false -o /local
 
       - name: Fix code style
         uses: docker://oskarstark/php-cs-fixer-ga:latest
