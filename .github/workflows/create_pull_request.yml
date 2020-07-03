@@ -9,7 +9,7 @@ jobs:
 
   createPullRequest:
 
-    name: Build API package
+    name: Create Pull Request
     runs-on: ubuntu-latest
 
     steps:
