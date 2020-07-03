@@ -1,9 +1,7 @@
-name: PHP Composer Tests
+name: Create Pull Request
 
 on:
-  push:
-    branches:
-      - develop
+  pull_request:
 
 jobs:
 
