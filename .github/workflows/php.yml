@@ -10,11 +10,11 @@ on:
     types:
       - created
 
-
 jobs:
 
   tests:
     name: PHPUnit
+
     runs-on: ubuntu-latest
 
     steps:
