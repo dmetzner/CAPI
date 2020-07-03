@@ -85,7 +85,7 @@ class ProjectsApiInterfaceTest extends WebTestCase
 
         $path = '/project/{project_id}';
         $pattern = '{project_id}';
-        $data = $this->genTestData('^[a-zA-Z0-9-]+$');
+        $data = $this->genTestData('^[a-zA-Z0-9\\-]+$');
         $path = str_replace($pattern, $data, $path);
 
         $crawler = $client->request('GET', $path);
@@ -178,7 +178,7 @@ class ProjectsApiInterfaceTest extends WebTestCase
 
         $path = '/projects/user/{user_id}';
         $pattern = '{user_id}';
-        $data = $this->genTestData('^[a-zA-Z0-9-]+$');
+        $data = $this->genTestData('^[a-zA-Z0-9\\-]+$');
         $path = str_replace($pattern, $data, $path);
 
         $crawler = $client->request('GET', $path);

@@ -133,7 +133,7 @@ class MediaLibraryApiInterfaceTest extends WebTestCase
 
         $path = '/media/package/{package_name}';
         $pattern = '{package_name}';
-        $data = $this->genTestData('^[a-zA-Z0-9-_]+$');
+        $data = $this->genTestData('^[a-zA-Z0-9\\-_]+$');
         $path = str_replace($pattern, $data, $path);
 
         $crawler = $client->request('GET', $path);
