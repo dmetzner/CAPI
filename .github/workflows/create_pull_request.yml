@@ -1,0 +1,51 @@
+name: PHP Composer Tests
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+
+  createPullRequest:
+
+    name: Create Pull Request
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+#      - name: SetUp Git
+#        run: |
+#          git config --global user.name 'Catrobot Catroweb'
+#          git config --global user.email 'catrobot@catroweb.noreply.github.com'
+
+      - uses: docker://oskarstark/php-cs-fixer-ga:latest
+        with:
+          args: --allow-risky=yes
+
+#      - name: Commit code style fixes
+#        run: |
+#          git commit -am "Automated php-cs-fixer"
+#          git push
+
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: Automated php-cs-fixer
+          committer: Catrobot <Catrobot@catroweb.github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          title: '[Example] ToDo'
+          body: |
+            ToDo
+          labels: automated, open-api-generator, php-cs-fixer
+          team-reviewers: owners, maintainers
+          branch: example-patches
+          request-to-parent: true
+
+      - name: Check outputs
+        run: |
+          echo "Pull Request Number - ${{ env.PULL_REQUEST_NUMBER }}"
+          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
