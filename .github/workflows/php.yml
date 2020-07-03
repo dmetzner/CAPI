@@ -10,9 +10,11 @@ on:
     types:
       - created
 
-jobs:
-  build:
 
+jobs:
+
+  tests:
+    name: PHPUnit
     runs-on: ubuntu-latest
 
     steps:
@@ -34,7 +36,22 @@ jobs:
         if: steps.composer-cache.outputs.cache-hit != 'true'
         run: composer install --prefer-dist --no-progress --no-suggest
 
-      # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-      # Docs: https://getcomposer.org/doc/articles/scripts.md
-      - name: Run test suite
-        run: composer run-script test
+
+  code-style:  # Check Coding standard - config defined in .php_cs(.dist)
+    name: PHP CS Fixer
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: docker://oskarstark/php-cs-fixer-ga:latest
+        with:
+#          args: --diff --dry-run --allow-risky=yes --verbose --format=txt
+          args: --allow-risky=yes
+
+      - name: Commit code style fixes
+        run: |
+          git config --global user.name 'Mr. PhpCsFixer'
+          git config --global user.email 'mr.php-cs-fixer@catroweb.noreply.github.com'
+          git commit -am "Automated php-cs-fixer"
+          git push
