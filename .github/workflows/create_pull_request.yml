@@ -1,4 +1,4 @@
-name: PHP Composer Tests
+name: Create Pull Request
 
 on:
   push:
@@ -36,14 +36,10 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: Automated php-cs-fixer
           committer: Catrobot <Catrobot@catroweb.github.com>
-          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           title: '[Example] ToDo'
           body: |
             ToDo
           labels: automated, open-api-generator, php-cs-fixer
-          team-reviewers: owners, maintainers
-          branch: example-patches
-          request-to-parent: true
 
       - name: Check outputs
         run: |
