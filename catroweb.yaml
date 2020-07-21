@@ -2,13 +2,13 @@ openapi: 3.0.2
 info:
   title: Catroweb API
   description: API for the Catrobat Share Platform
-  version: "v1.0.42"
+  version: "v1.0.43"
   termsOfService: 'https://share.catrob.at/pocketcode/termsOfUse'
   contact:
     name: Catrobat
     url: 'https://share.catrob.at'
     email: webmaster@catrobat.org
-    
+
 servers:
   - url: 'https://share.catrob.at/api'
     description: Main production server
@@ -626,7 +626,7 @@ components:
 
     UnprocessableEntity:
       description: Unprocessable Entity
-      
+
     InvalidIdToken:
       description: Invalid Client ID token
 
@@ -859,7 +859,7 @@ components:
       properties:
         token:
           type: string
-          example: xxxxx.yyyyy.zzzzz          
+          example: xxxxx.yyyyy.zzzzz
 
     ##############################################
     # UserSchemas
