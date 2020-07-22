@@ -9,6 +9,9 @@ jobs:
 
   createPullRequest:
 
+    # Only run if explicitly requested
+    if: contains(github.event.pull_request.labels.*.name, 'generate_code_on_merge')
+
     name: Create Pull Request
     runs-on: ubuntu-latest
 
