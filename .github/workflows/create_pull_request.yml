@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: debug
         run: |
-          echo "${{ toJson(github.event.) }}"
+          echo "${{ toJson(github.event) }}"
           echo "---"
           echo "${{ toJson(github.event.pull_request) }}"
           echo "---"
