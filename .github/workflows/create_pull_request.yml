@@ -1,4 +1,4 @@
-name: Create Pull Request
+name: Create (Code Generation) Pull Request
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ jobs:
 
   createPullRequest:
 
-    name: Create Pull Request
+    name: Create (Code Generation) Pull Request
     runs-on: ubuntu-latest
 
     steps:
@@ -46,6 +46,7 @@ jobs:
 
             For more information checkout the action '.github/workflows/create_pull_request.yml'
           labels: automated, open-api-generator, php-cs-fixer
+          branch-suffix: timestamp
 
       - name: Check outputs
         run: |
