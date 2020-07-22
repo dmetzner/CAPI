@@ -1,30 +1,11 @@
 name: Create Pull Request
 
 on:
-  push:
+  workflow_dispatch:
 
 jobs:
 
-  label:
-    name: Run only when the labels do not include "dependencies"
-    runs-on: ubuntu-latest
-    steps:
-      - name: debug
-        run: |
-          echo "${{ toJson(github.event) }}"
-          echo "---"
-          echo "${{ toJson(github.event.pull_request) }}"
-          echo "---"
-          echo "${{ toJson(github.event.pull_request.labels) }}"
-          echo "---"
-          echo "${{ toJson(github.event.pull_request.labels.*) }}"
-          echo "---"
-          echo "${{ toJson(github.event.pull_request.labels.*.name) }}"
-
   createPullRequest:
-
-    # Only run if explicitly requested
-    if: ${{ contains(github.event.pull_request.labels.*.names, 'generate_code_on_merge') }}
 
     name: Create Pull Request
     runs-on: ubuntu-latest
