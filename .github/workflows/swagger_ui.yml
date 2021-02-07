@@ -1,0 +1,31 @@
+name: Swagger UI
+
+on:
+  push:
+    branches: [ develop ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Generate Swagger UI
+        uses: Legion2/swagger-ui-action@v1
+        with:
+          output: swagger-ui
+          spec-file: catroweb.yaml
+       
+      - name: Upload code coverage report
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: SwaggerUI
+          path: swagger-ui
+      
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: swagger-ui
