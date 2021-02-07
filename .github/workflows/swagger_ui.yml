@@ -11,13 +11,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Generate Swagger UI
+      - name: Delte old Swagger UI files
+        run: rm -rf swagger-ui
+
+      - name: Generate new Swagger UI
         uses: Legion2/swagger-ui-action@v1
         with:
           output: swagger-ui
           spec-file: catroweb.yaml
        
-      - name: Upload code coverage report
+      - name: Upload Swagger UI as artifact
         uses: actions/upload-artifact@v2
         if: always()
         with:
