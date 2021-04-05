@@ -2,7 +2,7 @@ openapi: 3.0.2
 info:
   title: Catroweb API
   description: API for the Catrobat Share Platform
-  version: "v1.0.51"
+  version: "v1.0.57"
   termsOfService: 'https://share.catrob.at/pocketcode/termsOfUse'
   contact:
     name: Catrobat
@@ -83,7 +83,29 @@ paths:
         '415':
           $ref: '#/components/responses/UnsupportedMediaType'
 
-    put:
+    delete:
+      security:
+        - PandaAuth: [ ]
+      tags:
+        - Authentication
+      summary: Expires refresh token
+      description: Sets refresh token to expired
+      parameters:
+        - $ref: '#/components/parameters/RefreshToken'
+      responses:
+        '200':
+          $ref: '#/components/responses/OK'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/InvalidRefreshToken'
+        '406':
+          $ref: '#/components/responses/NotAcceptable'
+        '415':
+          $ref: '#/components/responses/UnsupportedMediaType'
+
+  /authentication/refresh:
+    post:
       security:
         - PandaAuth: []
       tags:
@@ -111,28 +133,6 @@ paths:
           $ref: '#/components/responses/NotAcceptable'
         '415':
           $ref: '#/components/responses/UnsupportedMediaType'
-
-    delete:
-      security:
-        - PandaAuth: [ ]
-      tags:
-        - Authentication
-      summary: Expires refresh token
-      description: Sets refresh token to expired
-      parameters:
-        - $ref: '#/components/parameters/RefreshToken'
-      responses:
-        '200':
-          $ref: '#/components/responses/OK'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/InvalidRefreshToken'
-        '406':
-          $ref: '#/components/responses/NotAcceptable'
-        '415':
-          $ref: '#/components/responses/UnsupportedMediaType'
-
   /authentication/oauth:
     post:
       tags:
@@ -175,6 +175,37 @@ paths:
         '204':
           description: System is alive and healthy!
 
+  /survey/{lang_code}:
+    get:
+      parameters:
+        - in: path
+          name: lang_code
+          schema:
+            type: string
+            example: de
+          required: true
+          description: 2 letter Language-Code is based on ISO693-1 (e.g. German = de, English = en, Russian = ru)
+      tags:
+        - Utility
+      summary: Get survey link for given language code.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SurveyResponse'
+          headers:
+            X-Response-Hash:
+              schema:
+                type: string
+                example: '56asfd5a56sfd564a56dsf65a56sdf'
+              description: 'MD5 Hash of response body. Used for caching responses.'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
   ##############################################
   # User
   ###
@@ -196,6 +227,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ExtendedUserDataResponse'
+
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -369,11 +401,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProjectsResponse'
           headers:
-            X-Project-Hash:
+            X-Response-Hash:
               schema:
                 type: string
                 example: '56asfd5a56sfd564a56dsf65a56sdf'
-                description: 'IF you send a HEAD request you will only get this hash'
+              description: 'MD5 Hash of response body. Used for caching responses.'
         '400':
           $ref: '#/components/responses/BadRequest'
         '406':
@@ -442,8 +474,8 @@ paths:
             X-Response-Hash:
               schema:
                 type: string
-                example:
-              description: MD5 Hash of the response body.
+                example: '56asfd5a56sfd564a56dsf65a56sdf'
+              description: 'MD5 Hash of response body. Used for caching responses.'
           content:
             application/json:
               schema:
@@ -453,6 +485,32 @@ paths:
         '406':
           $ref: '#/components/responses/NotAcceptable'
 
+  /projects/categories:
+    get:
+      tags:
+        - Projects
+      summary: Get default number of projects per category (Most downloaded etc.)
+      parameters:
+        - $ref: '#/components/parameters/MaxVersion'
+        - $ref: '#/components/parameters/Flavor'
+        - $ref: '#/components/parameters/Locale'
+      responses:
+        '200':
+          description: OK
+          headers:
+            X-Response-Hash:
+              schema:
+                type: string
+                example: '56asfd5a56sfd564a56dsf65a56sdf'
+              description: 'MD5 Hash of response body. Used for caching responses.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectsCategoryResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '406':
+          $ref: '#/components/responses/NotAcceptable'
   /projects/search:
     get:
       tags:
@@ -471,6 +529,12 @@ paths:
       responses:
         '200':
           description: OK
+          headers:
+            X-Response-Hash:
+              schema:
+                type: string
+                example: '56asfd5a56sfd564a56dsf65a56sdf'
+              description: 'MD5 Hash of response body. Used for caching responses.'
           content:
             application/json:
               schema:
@@ -495,6 +559,12 @@ paths:
       responses:
         '200':
           description: Valid request
+          headers:
+            X-Response-Hash:
+              schema:
+                type: string
+                example: '56asfd5a56sfd564a56dsf65a56sdf'
+              description: 'MD5 Hash of response body. Used for caching responses.'
           content:
             application/json:
               schema:
@@ -520,6 +590,12 @@ paths:
       responses:
         '200':
           description: Valid request
+          headers:
+            X-Response-Hash:
+              schema:
+                type: string
+                example: '56asfd5a56sfd564a56dsf65a56sdf'
+              description: 'MD5 Hash of response body. Used for caching responses.'
           content:
             application/json:
               schema:
@@ -541,6 +617,12 @@ paths:
       responses:
         '200':
           description: Valid request
+          headers:
+            X-Response-Hash:
+              schema:
+                type: string
+                example: '56asfd5a56sfd564a56dsf65a56sdf'
+              description: 'MD5 Hash of response body. Used for caching responses.'
           content:
             application/json:
               schema:
@@ -597,6 +679,12 @@ paths:
       responses:
         '200':
           description: OK
+          headers:
+            X-Response-Hash:
+              schema:
+                type: string
+                example: '56asfd5a56sfd564a56dsf65a56sdf'
+              description: 'MD5 Hash of response body. Used for caching responses.'
           content:
             application/json:
               schema:
@@ -706,6 +794,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MediaFilesResponse'
+          headers:
+            X-Response-Hash:
+              schema:
+                type: string
+                example: '56asfd5a56sfd564a56dsf65a56sdf'
+              description: 'MD5 Hash of response body. Used for caching responses.'
         '400':
           $ref: '#/components/responses/BadRequest'
         '404':
@@ -729,6 +823,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MediaFilesResponse'
+          headers:
+            X-Response-Hash:
+              schema:
+                type: string
+                example: '56asfd5a56sfd564a56dsf65a56sdf'
+              description: 'MD5 Hash of response body. Used for caching responses.'
         '400':
           $ref: '#/components/responses/BadRequest'
         '406':
@@ -754,6 +854,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MediaFileResponse'
+          headers:
+            X-Response-Hash:
+              schema:
+                type: string
+                example: '56asfd5a56sfd564a56dsf65a56sdf'
+              description: 'MD5 Hash of response body. Used for caching responses.'
         '400':
           $ref: '#/components/responses/BadRequest'
         '404':
@@ -788,6 +894,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MediaFilesResponse'
+          headers:
+            X-Response-Hash:
+              schema:
+                type: string
+                example: '56asfd5a56sfd564a56dsf65a56sdf'
+              description: 'MD5 Hash of response body. Used for caching responses.'
         '400':
           $ref: '#/components/responses/BadRequest'
         '406':
@@ -934,12 +1046,12 @@ components:
         type: string
         enum:
           - similar
-          - also downloaded
-          - more from user
+          - also_downloaded
+          - more_from_user
       description: |
         * `similar` - Get similar projects to the specific project
-        * `also downloaded` - Get projects that users who downloaded the specific project also downloaded
-        * `more from user` - Get more projects from the owner of the specific project
+        * `also_downloaded` - Get projects that users who downloaded the specific project also downloaded
+        * `more_from_user` - Get more projects from the owner of the specific project
     MaxVersion:
       name: max_version
       in: query
@@ -1328,6 +1440,9 @@ components:
         project_url:
           type: string
           example: 'http://localhost:8080/app/project/37bf6d39-3fc3-11eb-977a-0242ac120004'
+        url:
+          type: string
+          example: 'https://example.com/project/1234'
         name:
           type: string
           example: My example of a Project
@@ -1337,6 +1452,29 @@ components:
         featured_image:
           type: string
           example: 'https://share.catrob.at/resources/featured/featured_999.png'
+
+    ProjectsCategoryResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ProjectsCategory'
+
+    ProjectsCategory:
+      type: object
+      properties:
+        type:
+          type: string
+          example: recent
+          description: The name of the categories in english.
+        name:
+          type: string
+          example: Newest projects
+          description: Translated name according to the language header
+        projectsList:
+          type: array
+          description: Array of projects
+          items:
+            $ref: '#/components/schemas/ProjectResponse'
+
 
 
     ProjectsResponse:
@@ -1374,6 +1512,11 @@ components:
         flavor:
           type: string
           example: pocketcode
+        tags:
+          type: array
+          items:
+            type: string
+          example: [Tag1, Tag2]
         uploaded:
           type: integer
           example: 1575562569
@@ -1501,3 +1644,14 @@ components:
         prize:
           type: string
           description: Prize for anniversary notifications
+
+    ######################################################
+    # Utility Schemas
+    ###
+    SurveyResponse:
+      type: object
+      properties:
+        url:
+          type: string
+          example:  https://www.surveylegend.com/survey/#/d29yZHByZXNzMTQzODU2~-MRPPYfbYj7-rPUTK3HH
+          description: Url to a survey for the given language
